@@ -1,0 +1,32 @@
+{
+  "general": {
+    "easy": "The quick brown fox jumps over the lazy dog. This is a simple sentence for typing practice. Every word should be typed carefully and accurately.",
+    "medium": "Technology has revolutionized the way we communicate, work, and live our daily lives. From smartphones to artificial intelligence, innovation continues to shape our future in remarkable ways.",
+    "hard": "The implementation of quantum computing algorithms requires sophisticated mathematical frameworks, including complex eigenvalue decompositions and tensor product operations across multi-dimensional Hilbert spaces."
+  },
+  "programming": {
+    "easy": "function hello() { console.log('Hello World'); } let x = 10; if (x > 5) { return true; }",
+    "medium": "const fetchData = async (url) => { try { const response = await fetch(url); return response.json(); } catch (error) { console.error('Error:', error); } };",
+    "hard": "class BinarySearchTree<T> { private root: TreeNode<T> | null = null; insert(value: T): void { this.root = this.insertNode(this.root, value); } }"
+  },
+  "literature": {
+    "easy": "It was the best of times, it was the worst of times. The sun shone brightly on the peaceful meadow where children played happily.",
+    "medium": "In the midst of winter, I found there was, within me, an invincible summer. And that makes me happy. For it says that no matter how hard the world pushes against me, within me, there's something stronger.",
+    "hard": "The apparition of these faces in the crowd; petals on a wet, black bough. This juxtaposition of urban imagery with natural metaphor exemplifies the modernist movement's attempt to find beauty in industrial landscapes."
+  },
+  "business": {
+    "easy": "Dear valued customer, we appreciate your business and look forward to serving you again. Please contact us if you have any questions or concerns.",
+    "medium": "Our quarterly revenue increased by 15% compared to the previous period, driven by strong performance in our digital transformation initiatives and strategic partnerships with key industry leaders.",
+    "hard": "The comprehensive due diligence process revealed significant synergistic opportunities in operational efficiency, market penetration, and technological integration that could potentially generate substantial shareholder value."
+  },
+  "quotes": {
+    "easy": "Be yourself; everyone else is already taken. The only way to do great work is to love what you do.",
+    "medium": "Success is not final, failure is not fatal: it is the courage to continue that counts. Innovation distinguishes between a leader and a follower.",
+    "hard": "The pessimist sees difficulty in every opportunity. The optimist sees opportunity in every difficulty. Courage is not the absence of fear, but action in spite of it."
+  },
+  "news": {
+    "easy": "Local weather forecast shows sunny skies and mild temperatures for the weekend. Traffic conditions remain normal on major highways.",
+    "medium": "Scientists have discovered a new species of marine life in the deep ocean, highlighting the importance of continued research and conservation efforts in unexplored ecosystems.",
+    "hard": "The Federal Reserve's monetary policy decisions continue to influence global financial markets, with implications for inflation rates, employment statistics, and international trade relationships."
+  }
+}

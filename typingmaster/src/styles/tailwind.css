@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core Colors */
+    --color-background: #FAFAFA; /* warm off-white */
+    --color-foreground: #1E293B; /* rich charcoal */
+    --color-card: #FFFFFF; /* pure white */
+    --color-card-foreground: #1E293B; /* rich charcoal */
+    --color-popover: #FFFFFF; /* pure white */
+    --color-popover-foreground: #1E293B; /* rich charcoal */
+    --color-muted: #F1F5F9; /* light slate */
+    --color-muted-foreground: #64748B; /* muted slate */
+    --color-border: #E2E8F0; /* neutral border */
+    --color-input: #FFFFFF; /* pure white */
+    --color-ring: #2563EB; /* deep blue */
+
+    /* Brand Colors */
+    --color-primary: #2563EB; /* deep blue */
+    --color-primary-foreground: #FFFFFF; /* white */
+    --color-secondary: #64748B; /* balanced slate */
+    --color-secondary-foreground: #FFFFFF; /* white */
+    --color-accent: #10B981; /* success emerald */
+    --color-accent-foreground: #FFFFFF; /* white */
+
+    /* Status Colors */
+    --color-success: #059669; /* deeper emerald */
+    --color-success-foreground: #FFFFFF; /* white */
+    --color-warning: #D97706; /* amber */
+    --color-warning-foreground: #FFFFFF; /* white */
+    --color-error: #DC2626; /* clear red */
+    --color-error-foreground: #FFFFFF; /* white */
+    --color-destructive: #DC2626; /* clear red */
+    --color-destructive-foreground: #FFFFFF; /* white */
+
+    /* Typography */
+    --font-heading: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-caption: 'Inter', sans-serif;
+    --font-data: 'JetBrains Mono', monospace;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+
+    /* Animation */
+    --animation-fast: 150ms;
+    --animation-normal: 200ms;
+    --animation-slow: 300ms;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+
+  .font-data {
+    font-family: var(--font-data);
+  }
+}
+
+@layer components {
+  /* Performance-focused animations */
+  .animate-micro-feedback {
+    transition: transform var(--animation-fast) cubic-bezier(0.4, 0, 0.2, 1),
+                opacity var(--animation-fast) cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-state-change {
+    transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Typing-focused utilities */
+.typing-focus  {
+    @apply outline-none ring-2 ring-offset-2;
+  }
+
+  .progress-indicator {
+    background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-primary) 100%);
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-micro-feedback,
+    .animate-state-change {
+      transition: none;
+    }
+  }
+}
