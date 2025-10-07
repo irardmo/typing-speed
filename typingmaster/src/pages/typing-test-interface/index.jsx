@@ -23,6 +23,7 @@ const TypingTestInterface = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [testCompleted, setTestCompleted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(60);
+  const [timeCompleted, setTimeCompleted] = useState(0);
 
   // Performance metrics
   const [wpm, setWpm] = useState(0);
@@ -47,6 +48,9 @@ const TypingTestInterface = () => {
   const getTestText = useCallback(() => {
     return texts[category]?.[difficulty] || texts.general.medium;
   }, [category, difficulty]);
+
+  const testText = getTestText();
+  const totalWords = testText.split(' ').filter(Boolean).length;
 
   // Timer effect
   useEffect(() => {
@@ -115,12 +119,15 @@ const TypingTestInterface = () => {
     setTestCompleted(false);
     setTimeRemaining(duration);
     resetMetrics();
+    setTimeCompleted(0);
   };
 
   const handleTestComplete = () => {
     setIsTestActive(false);
     setIsPaused(false);
     setTestCompleted(true);
+    const completedTime = duration - timeRemaining;
+    setTimeCompleted(completedTime);
 
     // Save test results to localStorage
     const testResult = {
@@ -134,7 +141,7 @@ const TypingTestInterface = () => {
       wordsTyped,
       totalKeystrokes,
       correctKeystrokes,
-      timeCompleted: duration - timeRemaining
+      timeCompleted: completedTime,
     };
 
     const existingResults = JSON.parse(localStorage.getItem('typingTestResults') || '[]');
@@ -159,6 +166,7 @@ const TypingTestInterface = () => {
     setWordsTyped(0);
     setTotalKeystrokes(0);
     setCorrectKeystrokes(0);
+    setTimeCompleted(0);
   };
 
   // Keystroke handler
@@ -276,6 +284,10 @@ const TypingTestInterface = () => {
                 wordsTyped={wordsTyped}
                 totalKeystrokes={totalKeystrokes}
                 correctKeystrokes={correctKeystrokes}
+                testCompleted={testCompleted}
+                timeCompleted={timeCompleted}
+                totalWords={totalWords}
+                testDuration={duration}
               />
             </div>
           </div>

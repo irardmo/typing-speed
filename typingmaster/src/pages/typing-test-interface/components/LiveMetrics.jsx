@@ -8,9 +8,41 @@ const LiveMetrics = ({
   wordsTyped = 0,
   totalKeystrokes = 0,
   correctKeystrokes = 0,
-  className = ''
+  className = '',
+  testCompleted = false,
+  timeCompleted = 0,
+  totalWords = 0,
+  testDuration = 60,
 }) => {
-  const finalScore = Math.round((wpm * accuracy) / 100);
+  const calculateFinalScore = () => {
+    if (!testCompleted) return 0;
+
+    // 1. WPM Score (25%) - Normalized to a max of 100
+    const wpmScore = Math.min(wpm, 100);
+
+    // 2. Accuracy Score (25%)
+    const accuracyScore = accuracy;
+
+    // 3. Completion Score (25%)
+    const completionScore = totalWords > 0 ? (wordsTyped / totalWords) * 100 : 0;
+
+    // 4. Time Bonus (25%) - Awarded for finishing faster than the allocated time
+    const timeBonus =
+      timeCompleted > 0 && timeCompleted < testDuration
+        ? ((testDuration - timeCompleted) / testDuration) * 100
+        : 0;
+
+    const finalScore = Math.round(
+      wpmScore * 0.25 +
+        accuracyScore * 0.25 +
+        completionScore * 0.25 +
+        timeBonus * 0.25
+    );
+
+    return finalScore;
+  };
+
+  const finalScore = calculateFinalScore();
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -40,7 +72,9 @@ const LiveMetrics = ({
   return (
     <div className={`bg-card border border-border rounded-lg p-6 ${className}`}>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-heading font-semibold text-foreground">Live Metrics</h2>
+        <h2 className="text-xl font-heading font-semibold text-foreground">
+          {testCompleted ? 'Final Results' : 'Live Metrics'}
+        </h2>
         <Icon name="Activity" size={20} className="text-muted-foreground" />
       </div>
 
@@ -126,54 +160,66 @@ const LiveMetrics = ({
         </div>
       </div>
 
-      {/* Final Score */}
-      <div className="text-center mt-6 pt-6 border-t border-border">
-        <div className="flex items-center justify-center mb-2">
-          <Icon name="Award" size={24} className="text-muted-foreground mr-2" />
-          <span className="text-lg font-medium text-muted-foreground">Final Score</span>
+      {/* Final Score - Conditionally Rendered */}
+      {testCompleted && (
+        <div className="text-center mt-6 pt-6 border-t border-border">
+          <div className="flex items-center justify-center mb-2">
+            <Icon name="Award" size={24} className="text-muted-foreground mr-2" />
+            <span className="text-lg font-medium text-muted-foreground">Final Score</span>
+          </div>
+          <div className="text-5xl font-data font-bold text-primary">
+            {finalScore}
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Performance Grade
+          </div>
         </div>
-        <div className="text-5xl font-data font-bold text-primary">
-          {finalScore}
-        </div>
-        <div className="text-xs text-muted-foreground mt-1">
-          Performance Grade
-        </div>
-      </div>
+      )}
 
       {/* Progress Indicators */}
-      <div className="mt-6 space-y-3">
-        {/* Accuracy Progress Bar */}
-        <div>
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-muted-foreground">Accuracy Progress</span>
-            <span className="text-xs font-data text-muted-foreground">{accuracy}%</span>
+      {!testCompleted && (
+        <div className="mt-6 space-y-3">
+          {/* Accuracy Progress Bar */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-muted-foreground">Accuracy Progress</span>
+              <span className="text-xs font-data text-muted-foreground">{accuracy}%</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2">
+              <div
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  accuracy >= 95
+                    ? 'bg-success'
+                    : accuracy >= 85
+                    ? 'bg-warning'
+                    : 'bg-error'
+                }`}
+                style={{ width: `${Math.min(accuracy, 100)}%` }}
+              />
+            </div>
           </div>
-          <div className="w-full bg-muted rounded-full h-2">
-            <div
-              className={`h-2 rounded-full transition-all duration-300 ${
-                accuracy >= 95 ? 'bg-success' : accuracy >= 85 ? 'bg-warning' : 'bg-error'
-              }`}
-              style={{ width: `${Math.min(accuracy, 100)}%` }}
-            />
-          </div>
-        </div>
 
-        {/* WPM Progress Bar (assuming target of 60 WPM) */}
-        <div>
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-muted-foreground">Speed Progress</span>
-            <span className="text-xs font-data text-muted-foreground">{wpm} WPM</span>
-          </div>
-          <div className="w-full bg-muted rounded-full h-2">
-            <div
-              className={`h-2 rounded-full transition-all duration-300 ${
-                wpm >= 60 ? 'bg-success' : wpm >= 40 ? 'bg-accent' : 'bg-primary'
-              }`}
-              style={{ width: `${Math.min((wpm / 60) * 100, 100)}%` }}
-            />
+          {/* WPM Progress Bar (assuming target of 60 WPM) */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-muted-foreground">Speed Progress</span>
+              <span className="text-xs font-data text-muted-foreground">{wpm} WPM</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2">
+              <div
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  wpm >= 60
+                    ? 'bg-success'
+                    : wpm >= 40
+                    ? 'bg-accent'
+                    : 'bg-primary'
+                }`}
+                style={{ width: `${Math.min((wpm / 60) * 100, 100)}%` }}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
