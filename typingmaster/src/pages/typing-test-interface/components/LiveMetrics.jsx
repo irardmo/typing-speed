@@ -10,6 +10,8 @@ const LiveMetrics = ({
   correctKeystrokes = 0,
   className = ''
 }) => {
+  const finalScore = Math.round((wpm * accuracy) / 100);
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -121,6 +123,20 @@ const LiveMetrics = ({
           <span className="text-sm font-data font-medium text-success">
             {correctKeystrokes}
           </span>
+        </div>
+      </div>
+
+      {/* Final Score */}
+      <div className="text-center mt-6 pt-6 border-t border-border">
+        <div className="flex items-center justify-center mb-2">
+          <Icon name="Award" size={24} className="text-muted-foreground mr-2" />
+          <span className="text-lg font-medium text-muted-foreground">Final Score</span>
+        </div>
+        <div className="text-5xl font-data font-bold text-primary">
+          {finalScore}
+        </div>
+        <div className="text-xs text-muted-foreground mt-1">
+          Performance Grade
         </div>
       </div>
 
