@@ -28,38 +28,32 @@ const TypingArea = ({
   const handleInputChange = useCallback((e) => {
     if (!isTestActive) return;
 
-    const value = e?.target?.value;
-    const lastChar = value?.[value?.length - 1];
-
+    const value = e.target.value;
     setUserInput(value);
 
-    // Track keystroke for metrics
+    const lastChar = value[value.length - 1];
     onKeystroke?.(lastChar, currentWordIndex, currentCharIndex);
 
-    // Check for word completion
+    // Immediately complete the test if the last word is typed correctly
+    if (currentWordIndex === words.length - 1 && value === words[currentWordIndex]) {
+      onTestComplete?.();
+      return;
+    }
+
+    // Handle word completion on space
     if (lastChar === ' ') {
-      const typedWord = value?.trim();
-      const expectedWord = words?.[currentWordIndex];
+      const typedWord = value.trim();
+      const expectedWord = words[currentWordIndex];
 
-      if (typedWord === expectedWord) {
-        // Correct word
-        setCurrentWordIndex(prev => prev + 1);
-        setCurrentCharIndex(0);
-        setUserInput('');
-
-        // Check if test is complete
-        if (currentWordIndex + 1 >= words?.length) {
-          onTestComplete?.();
-        }
-      } else {
-        // Incorrect word - mark as error
+      if (typedWord !== expectedWord) {
         setErrors(prev => [...prev, { wordIndex: currentWordIndex, word: typedWord }]);
-        setCurrentWordIndex(prev => prev + 1);
-        setCurrentCharIndex(0);
-        setUserInput('');
       }
+
+      setCurrentWordIndex(prev => prev + 1);
+      setCurrentCharIndex(0);
+      setUserInput('');
     } else {
-      setCurrentCharIndex(value?.length);
+      setCurrentCharIndex(value.length);
     }
   }, [isTestActive, currentWordIndex, currentCharIndex, words, onKeystroke, onTestComplete]);
 
