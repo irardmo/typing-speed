@@ -170,18 +170,15 @@ const TypingTestInterface = () => {
   };
 
   // Keystroke handler
-  const handleKeystroke = useCallback((char, wordIndex, charIndex) => {
+  const handleKeystroke = useCallback((isCorrect) => {
     setTotalKeystrokes(prev => prev + 1);
-
-    // Simple accuracy calculation (in real implementation, this would be more sophisticated)
-    if (Math.random() > 0.15) { // Simulate 85% accuracy
+    if (isCorrect) {
       setCorrectKeystrokes(prev => prev + 1);
     }
+  }, []);
 
-    // Update words typed (simplified)
-    if (char === ' ') {
-      setWordsTyped(prev => prev + 1);
-    }
+  const handleWordTyped = useCallback(() => {
+    setWordsTyped(prev => prev + 1);
   }, []);
 
   // Settings handlers
@@ -272,6 +269,7 @@ const TypingTestInterface = () => {
                 isTestActive={isTestActive && !isPaused}
                 onKeystroke={handleKeystroke}
                 onTestComplete={handleTestComplete}
+                onWordTyped={handleWordTyped}
               />
             </div>
 

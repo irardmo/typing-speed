@@ -6,6 +6,7 @@ const TypingArea = ({
   isTestActive,
   onKeystroke,
   onTestComplete,
+  onWordTyped,
   className = ''
 }) => {
   const [userInput, setUserInput] = useState('');
@@ -29,10 +30,13 @@ const TypingArea = ({
     if (!isTestActive) return;
 
     const value = e.target.value;
-    setUserInput(value);
-
     const lastChar = value[value.length - 1];
-    onKeystroke?.(lastChar, currentWordIndex, currentCharIndex);
+
+    const currentWord = words[currentWordIndex];
+    const isCorrect = currentWord[currentCharIndex] === lastChar;
+
+    onKeystroke?.(isCorrect);
+    setUserInput(value);
 
     // Immediately complete the test if the last word is typed correctly
     if (currentWordIndex === words.length - 1 && value === words[currentWordIndex]) {
@@ -45,7 +49,9 @@ const TypingArea = ({
       const typedWord = value.trim();
       const expectedWord = words[currentWordIndex];
 
-      if (typedWord !== expectedWord) {
+      if (typedWord === expectedWord) {
+        onWordTyped?.();
+      } else {
         setErrors(prev => [...prev, { wordIndex: currentWordIndex, word: typedWord }]);
       }
 
@@ -55,7 +61,7 @@ const TypingArea = ({
     } else {
       setCurrentCharIndex(value.length);
     }
-  }, [isTestActive, currentWordIndex, currentCharIndex, words, onKeystroke, onTestComplete]);
+  }, [isTestActive, currentWordIndex, currentCharIndex, words, onKeystroke, onTestComplete, onWordTyped]);
 
   // Reset state when test starts/stops
   useEffect(() => {
