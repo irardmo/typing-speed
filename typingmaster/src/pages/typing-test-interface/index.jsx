@@ -169,16 +169,14 @@ const TypingTestInterface = () => {
     setTimeCompleted(0);
   };
 
-  // Keystroke handler
-  const handleKeystroke = useCallback((isCorrect) => {
+  const handleProgress = useCallback(({ correct, char, wordCompleted }) => {
     setTotalKeystrokes(prev => prev + 1);
-    if (isCorrect) {
+    if (correct) {
       setCorrectKeystrokes(prev => prev + 1);
     }
-  }, []);
-
-  const handleWordTyped = useCallback(() => {
-    setWordsTyped(prev => prev + 1);
+    if (wordCompleted) {
+      setWordsTyped(prev => prev + 1);
+    }
   }, []);
 
   // Settings handlers
@@ -267,9 +265,8 @@ const TypingTestInterface = () => {
               <TypingArea
                 testText={getTestText()}
                 isTestActive={isTestActive && !isPaused}
-                onKeystroke={handleKeystroke}
                 onTestComplete={handleTestComplete}
-                onWordTyped={handleWordTyped}
+                onProgress={handleProgress}
               />
             </div>
 

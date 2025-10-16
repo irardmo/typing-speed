@@ -4,9 +4,8 @@ import Icon from '../../../components/AppIcon';
 const TypingArea = ({
   testText,
   isTestActive,
-  onKeystroke,
   onTestComplete,
-  onWordTyped,
+  onProgress,
   className = ''
 }) => {
   const [userInput, setUserInput] = useState('');
@@ -29,39 +28,49 @@ const TypingArea = ({
   const handleInputChange = useCallback((e) => {
     if (!isTestActive) return;
 
-    const value = e.target.value;
-    const lastChar = value[value.length - 1];
-
+    const typedValue = e.target.value;
+    const lastChar = typedValue[typedValue.length - 1];
     const currentWord = words[currentWordIndex];
-    const isCorrect = currentWord[currentCharIndex] === lastChar;
 
-    onKeystroke?.(isCorrect);
-    setUserInput(value);
-
-    // Immediately complete the test if the last word is typed correctly
-    if (currentWordIndex === words.length - 1 && value === words[currentWordIndex]) {
-      onTestComplete?.();
+    // Ignore backspace and other non-character keys for progress tracking
+    if (typedValue.length <= userInput.length) {
+      setUserInput(typedValue);
+      setCurrentCharIndex(typedValue.length);
       return;
     }
 
-    // Handle word completion on space
-    if (lastChar === ' ') {
-      const typedWord = value.trim();
-      const expectedWord = words[currentWordIndex];
+    const isCorrectChar = currentWord[currentCharIndex] === lastChar;
+    onProgress({ correct: isCorrectChar, char: lastChar });
 
-      if (typedWord === expectedWord) {
-        onWordTyped?.();
-      } else {
-        setErrors(prev => [...prev, { wordIndex: currentWordIndex, word: typedWord }]);
+    // Handle word completion
+    if (lastChar === ' ') {
+      const typedWord = typedValue.trim();
+      if (typedWord === currentWord) {
+        onProgress({ correct: true, char: ' ', wordCompleted: true });
       }
 
       setCurrentWordIndex(prev => prev + 1);
       setCurrentCharIndex(0);
       setUserInput('');
     } else {
-      setCurrentCharIndex(value.length);
+      setUserInput(typedValue);
+      setCurrentCharIndex(typedValue.length);
     }
-  }, [isTestActive, currentWordIndex, currentCharIndex, words, onKeystroke, onTestComplete, onWordTyped]);
+
+    // Handle test completion
+    if (currentWordIndex === words.length - 1 && typedValue === currentWord) {
+      onProgress({ correct: true, wordCompleted: true });
+      onTestComplete();
+    }
+  }, [
+    isTestActive,
+    userInput,
+    currentWordIndex,
+    currentCharIndex,
+    words,
+    onProgress,
+    onTestComplete,
+  ]);
 
   // Reset state when test starts/stops
   useEffect(() => {
