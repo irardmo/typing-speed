@@ -26,20 +26,27 @@ const LiveMetrics = ({
     // 3. Completion Score (25%)
     const completionScore = totalWords > 0 ? (wordsTyped / totalWords) * 100 : 0;
 
-    // 4. Time Bonus (25%) - Awarded for finishing faster than the allocated time
+    // 4. Time Bonus (25%) - Awarded only for 100% accuracy
     const timeBonus =
-      timeCompleted > 0 && timeCompleted < testDuration
+      accuracy === 100 && timeCompleted > 0 && timeCompleted < testDuration
         ? ((testDuration - timeCompleted) / testDuration) * 100
         : 0;
 
-    const finalScore = Math.round(
+    let finalScore = Math.round(
       wpmScore * 0.25 +
         accuracyScore * 0.25 +
         completionScore * 0.25 +
         timeBonus * 0.25
     );
 
-    return finalScore;
+    // Penalty for not finishing
+    if (timeRemaining <= 0 && wordsTyped < totalWords) {
+      const wordsMissed = totalWords - wordsTyped;
+      const penalty = (wordsMissed / totalWords) * 25; // Penalty up to 25 points
+      finalScore = Math.max(0, finalScore - penalty);
+    }
+
+    return Math.round(finalScore);
   };
 
   const finalScore = calculateFinalScore();
