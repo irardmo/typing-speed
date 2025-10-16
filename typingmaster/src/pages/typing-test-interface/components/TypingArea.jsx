@@ -47,6 +47,8 @@ const TypingArea = ({
       const typedWord = typedValue.trim();
       if (typedWord === currentWord) {
         onProgress({ correct: true, char: ' ', wordCompleted: true });
+      } else {
+        setErrors(prev => [...prev, { wordIndex: currentWordIndex, word: typedWord }]);
       }
 
       setCurrentWordIndex(prev => prev + 1);

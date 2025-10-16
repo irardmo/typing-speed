@@ -199,7 +199,7 @@ const LiveMetrics = ({
             </div>
           </div>
 
-          {/* WPM Progress Bar (assuming target of 60 WPM) */}
+          {/* WPM Progress Bar (assuming target of 30 WPM) */}
           <div>
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs text-muted-foreground">Speed Progress</span>
@@ -208,13 +208,13 @@ const LiveMetrics = ({
             <div className="w-full bg-muted rounded-full h-2">
               <div
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  wpm >= 60
+                  wpm >= 30
                     ? 'bg-success'
-                    : wpm >= 40
+                    : wpm >= 15
                     ? 'bg-accent'
                     : 'bg-primary'
                 }`}
-                style={{ width: `${Math.min((wpm / 60) * 100, 100)}%` }}
+                style={{ width: `${Math.min((wpm / 30) * 100, 100)}%` }}
               />
             </div>
           </div>
