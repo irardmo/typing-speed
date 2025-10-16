@@ -17,8 +17,8 @@ const LiveMetrics = ({
   const calculateFinalScore = () => {
     if (!testCompleted) return 0;
 
-    // 1. WPM Score (25%) - Normalized to a max of 100
-    const wpmScore = Math.min(wpm, 100);
+    // 1. WPM Score (25%) - Based on a 30 WPM target
+    const wpmScore = Math.min((wpm / 30) * 100, 100);
 
     // 2. Accuracy Score (25%)
     const accuracyScore = accuracy;
@@ -26,10 +26,10 @@ const LiveMetrics = ({
     // 3. Completion Score (25%)
     const completionScore = totalWords > 0 ? (wordsTyped / totalWords) * 100 : 0;
 
-    // 4. Time Bonus (25%) - Awarded only for 100% accuracy
+    // 4. Time Bonus (25%) - Scaled by accuracy
     const timeBonus =
-      accuracy === 100 && timeCompleted > 0 && timeCompleted < testDuration
-        ? ((testDuration - timeCompleted) / testDuration) * 100
+      timeCompleted > 0 && timeCompleted < testDuration
+        ? (((testDuration - timeCompleted) / testDuration) * 100) * (accuracy / 100)
         : 0;
 
     let finalScore = Math.round(
