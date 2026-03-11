@@ -762,6 +762,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const fileList = document.getElementById('fileList');
+    const uploadForm = document.getElementById('uploadForm');
+    const MAX_UPLOAD_SIZE = 40 * 1024 * 1024; // 40MB
 
     if (dropZone) {
         dropZone.onclick = () => fileInput.click();
@@ -819,13 +821,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fileInput.onchange = () => updateFileList();
 
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
         function updateFileList() {
             const files = fileInput.files;
+            let totalSize = 0;
+            for (let i = 0; i < files.length; i++) {
+                totalSize += files[i].size;
+            }
+
             if (files.length > 0) {
-                fileList.innerHTML = `<strong>Selected files:</strong> ${files.length} file(s) selected.`;
+                let sizeColor = totalSize > MAX_UPLOAD_SIZE ? '#ef4444' : 'var(--td-gray)';
+                fileList.innerHTML = `<strong>Selected:</strong> ${files.length} file(s) - <span style="color: ${sizeColor}">${formatBytes(totalSize)}</span>`;
+                if (totalSize > MAX_UPLOAD_SIZE) {
+                    fileList.innerHTML += `<br><small style="color: #ef4444;">⚠️ Total size exceeds the 40MB limit. Please remove some files.</small>`;
+                }
             } else {
                 fileList.innerHTML = '';
             }
+        }
+
+        if (uploadForm) {
+            uploadForm.onsubmit = (e) => {
+                const files = fileInput.files;
+                let totalSize = 0;
+                for (let i = 0; i < files.length; i++) {
+                    totalSize += files[i].size;
+                }
+
+                if (totalSize > MAX_UPLOAD_SIZE) {
+                    e.preventDefault();
+                    alert('❌ Upload failed: The total size of ' + formatBytes(totalSize) + ' exceeds the 40MB limit.');
+                    return false;
+                }
+                if (files.length === 0) {
+                    e.preventDefault();
+                    alert('❌ Please select at least one file to upload.');
+                    return false;
+                }
+            };
         }
     }
 });
