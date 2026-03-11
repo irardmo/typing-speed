@@ -763,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const fileList = document.getElementById('fileList');
     const uploadForm = document.getElementById('uploadForm');
-    const MAX_UPLOAD_SIZE = 40 * 1024 * 1024; // 40MB
+    const MAX_UPLOAD_SIZE = 300 * 1024 * 1024; // 300MB
 
     if (dropZone) {
         dropZone.onclick = () => fileInput.click();
@@ -841,7 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let sizeColor = totalSize > MAX_UPLOAD_SIZE ? '#ef4444' : 'var(--td-gray)';
                 fileList.innerHTML = `<strong>Selected:</strong> ${files.length} file(s) - <span style="color: ${sizeColor}">${formatBytes(totalSize)}</span>`;
                 if (totalSize > MAX_UPLOAD_SIZE) {
-                    fileList.innerHTML += `<br><small style="color: #ef4444;">⚠️ Total size exceeds the 40MB limit. Please remove some files.</small>`;
+                    fileList.innerHTML += `<br><small style="color: #ef4444;">⚠️ Total size exceeds the 300MB limit. Please remove some files.</small>`;
                 }
             } else {
                 fileList.innerHTML = '';
@@ -858,7 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (totalSize > MAX_UPLOAD_SIZE) {
                     e.preventDefault();
-                    alert('❌ Upload failed: The total size of ' + formatBytes(totalSize) + ' exceeds the 40MB limit.');
+                    alert('❌ Upload failed: The total size of ' + formatBytes(totalSize) + ' exceeds the 300MB limit.');
                     return false;
                 }
                 if (files.length === 0) {
